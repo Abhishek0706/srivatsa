@@ -7,18 +7,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import GoogleCloudSpeechToText from 'react-native-google-cloud-speech-to-text';
 import {useDispatch, useSelector} from 'react-redux';
-
-import VoiceRecognizer from './VoiceRecognizer';
-import {apiKey} from '../../env';
 import ItemCard from '../components/ItemCard';
-import ModalView from '../components/ModalView';
 import HeeboText from '../components/UI/HeeboText';
 import IconButton from '../components/UI/IconButton';
 import NewItemScreenTitle from '../components/UI/NewItemScreenTitle';
 import Colors from '../constants/Colors';
 import * as ItemsAction from '../store/itemsAction';
+import VoiceRecognizer from './VoiceRecognizer';
 
 const introdata =
   'Like chair, table, bible, iphone 7, Nike Blue UK 9 Running Shoes, RedShirt, MBW X5 Car, RV, Airgum, Drome, Rain coat, Horse etc';
@@ -79,6 +75,7 @@ const NewItemScreen = ({route, navigation}) => {
         <HeeboText
           style={{
             textAlign: 'right',
+            fontSize: 12,
           }}>{`${newKeyword.length}/800`}</HeeboText>
         <HeeboText style={styles.topContainerHeader}>
           List all items others can rent, borrow or buy
@@ -169,7 +166,7 @@ const styles = StyleSheet.create({
   topContainer: {
     height: '100%',
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
   inputContainer: {
     margin: 20,
@@ -181,7 +178,7 @@ const styles = StyleSheet.create({
   textInput: {
     width: 240,
     borderBottomWidth: 1,
-    borderBottomColor: 'lightgrey',
+    borderBottomColor: Colors.primaryColor,
     marginHorizontal: 10,
     paddingVertical: 0,
     fontFamily: 'Heebo-Medium',

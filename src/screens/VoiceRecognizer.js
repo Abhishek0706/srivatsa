@@ -1,17 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Modal,
   StyleSheet,
-  View,
-  TouchableWithoutFeedback,
   Text,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import GoogleCloudSpeechToText from 'react-native-google-cloud-speech-to-text';
-import {useDispatch, useSelector} from 'react-redux';
-
+import {useDispatch} from 'react-redux';
+import {apiKey} from '../../env';
 import HeeboText from '../components/UI/HeeboText';
 import Colors from '../constants/Colors';
-import {apiKey} from '../../env';
 import * as ItemsAction from '../store/itemsAction';
 
 const VoiceRecognizer = ({onPressOutside}) => {
@@ -76,10 +75,14 @@ const VoiceRecognizer = ({onPressOutside}) => {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                <HeeboText style={styles.convertedText}>
-                  {convertedText}
-                </HeeboText>
-                <Text style={styles.micViewText}>Speak out Keywords !</Text>
+                {!!convertedText && (
+                  <HeeboText style={styles.convertedText}>
+                    {convertedText}
+                  </HeeboText>
+                )}
+                {!convertedText && (
+                  <Text style={styles.micViewText}>Speak out Keywords !</Text>
+                )}
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -101,22 +104,22 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: 'rgba(52, 52, 52, 0.2)',
+    backgroundColor: 'transparent',
   },
   VoiceRecognizer: {
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: Colors.micContainerColor,
     width: '100%',
-    height: 200,
+    height: 220,
   },
   convertedText: {
     color: 'white',
     fontSize: 18,
   },
   micViewText: {
-    color: 'white',
-    fontSize: 16,
+    color: 'whitesmoke',
+    fontSize: 18,
   },
 });
 
