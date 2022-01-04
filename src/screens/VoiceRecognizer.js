@@ -1,11 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Modal,
   StyleSheet,
   View,
   TouchableWithoutFeedback,
   Text,
-  PermissionsAndroid,
 } from 'react-native';
 import GoogleCloudSpeechToText from 'react-native-google-cloud-speech-to-text';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,14 +12,11 @@ import {useDispatch, useSelector} from 'react-redux';
 import HeeboText from '../components/UI/HeeboText';
 import Colors from '../constants/Colors';
 import {apiKey} from '../../env';
+import * as ItemsAction from '../store/itemsAction';
 
-const ModalView = ({onPressOutside, children}) => {
+const VoiceRecognizer = ({onPressOutside}) => {
   const dispatch = useDispatch();
   const [convertedText, setConvertedText] = useState('');
-
-  useEffect(() => {
-    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO);
-  }, []);
 
   useEffect(() => {
     GoogleCloudSpeechToText.setApiKey(apiKey);
@@ -72,7 +68,7 @@ const ModalView = ({onPressOutside, children}) => {
       <TouchableWithoutFeedback onPress={onPressOutside}>
         <View style={styles.bottomView}>
           <TouchableWithoutFeedback>
-            <View style={styles.modalView}>
+            <View style={styles.VoiceRecognizer}>
               <Text style={{fontSize: 24, color: 'white'}}>....</Text>
               <View
                 style={{
@@ -80,7 +76,10 @@ const ModalView = ({onPressOutside, children}) => {
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
-                {children}
+                <HeeboText style={styles.convertedText}>
+                  {convertedText}
+                </HeeboText>
+                <Text style={styles.micViewText}>Speak out Keywords !</Text>
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -104,13 +103,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(52, 52, 52, 0.2)',
   },
-  modalView: {
+  VoiceRecognizer: {
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: Colors.micContainerColor,
     width: '100%',
     height: 200,
   },
+  convertedText: {
+    color: 'white',
+    fontSize: 18,
+  },
+  micViewText: {
+    color: 'white',
+    fontSize: 16,
+  },
 });
 
-export default ModalView;
+export default VoiceRecognizer;

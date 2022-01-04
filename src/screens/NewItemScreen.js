@@ -3,7 +3,6 @@ import {
   PermissionsAndroid,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -11,6 +10,7 @@ import {
 import GoogleCloudSpeechToText from 'react-native-google-cloud-speech-to-text';
 import {useDispatch, useSelector} from 'react-redux';
 
+import VoiceRecognizer from './VoiceRecognizer';
 import {apiKey} from '../../env';
 import ItemCard from '../components/ItemCard';
 import ModalView from '../components/ModalView';
@@ -33,9 +33,9 @@ const NewItemScreen = ({route, navigation}) => {
   const items = useSelector(state => state.items);
   const dispatch = useDispatch();
 
-  const [convertedText, setConvertedText] = useState('');
   const [newKeyword, setnewKeyword] = useState('');
   const [showMic, setShowMic] = useState(true);
+  const [granted, setGranted] = useState(true);
 
   const setnewKeywordHandler = data => {
     setnewKeyword(data);
@@ -51,61 +51,22 @@ const NewItemScreen = ({route, navigation}) => {
   };
 
   useEffect(() => {
-    PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, {
-      title: 'Microphone Permission',
-      message: ' this App need access of Microphone',
-      buttonNeutral: 'Ask Me Later',
-      buttonNegative: 'Cancel',
-      buttonPositive: 'OK',
-    });
-  }, []);
-
-  useEffect(() => {
-    GoogleCloudSpeechToText.setApiKey(apiKey);
-    GoogleCloudSpeechToText.onVoice(onVoice);
-    GoogleCloudSpeechToText.onVoiceStart(onVoiceStart);
-    GoogleCloudSpeechToText.onVoiceEnd(onVoiceEnd);
-    GoogleCloudSpeechToText.onSpeechError(onSpeechError);
-    GoogleCloudSpeechToText.onSpeechRecognized(onSpeechRecognized);
-    GoogleCloudSpeechToText.onSpeechRecognizing(onSpeechRecognizing);
-    return () => {
-      GoogleCloudSpeechToText.removeListeners();
+    const requestMicrophonePermission = async () => {
+      const result = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      );
+      if (result !== PermissionsAndroid.RESULTS.GRANTED) setGranted(false);
     };
+
+    requestMicrophonePermission();
   }, []);
-
-  const onSpeechError = _error => {
-    console.log('onSpeechError: ', _error);
-  };
-
-  const onSpeechRecognized = result => {
-    setConvertedText('');
-    dispatch(ItemsAction.add(result.transcript));
-  };
-
-  const onSpeechRecognizing = result => {
-    setConvertedText(result.transcript);
-  };
-
-  const onVoiceStart = _event => {};
-  const onVoice = _event => {};
-  const onVoiceEnd = () => {};
-
-  const startRecognizingHandler = async () => {
-    GoogleCloudSpeechToText.start({speechToFile: true});
-  };
-  const stopRecognizingHandler = async () => {
-    GoogleCloudSpeechToText.stop();
-  };
 
   const [modalVisible, setModalVisible] = useState(false);
   const openModal = () => {
-    setConvertedText('');
     setModalVisible(true);
-    startRecognizingHandler();
   };
   const closeModal = () => {
     setModalVisible(false);
-    stopRecognizingHandler();
   };
 
   const onItemSelected = id => {
@@ -136,8 +97,10 @@ const NewItemScreen = ({route, navigation}) => {
             style={styles.textInput}
             color={Colors.primaryColor}
           />
-          {showMic && <IconButton name={'mic'} onPress={openModal} />}
-          {!showMic && (
+          {granted && showMic && (
+            <IconButton name={'mic'} onPress={openModal} />
+          )}
+          {(!granted || !showMic) && (
             <IconButton
               name={'add'}
               title={'ADD'}
@@ -192,16 +155,7 @@ const NewItemScreen = ({route, navigation}) => {
             <HeeboText style={styles.nextButtonText}>{'>  Next'}</HeeboText>
           </TouchableOpacity>
         </View>
-        {modalVisible && (
-          <ModalView onPressOutside={closeModal}>
-            {!!convertedText && (
-              <HeeboText style={styles.convertedText}>
-                {convertedText}
-              </HeeboText>
-            )}
-            <Text style={styles.micViewText}>Speak out Keywords !</Text>
-          </ModalView>
-        )}
+        {modalVisible && <VoiceRecognizer onPressOutside={closeModal} />}
       </View>
     </View>
   );
