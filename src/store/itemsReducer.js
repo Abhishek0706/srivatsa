@@ -7,14 +7,14 @@ export default (state = initialState, action) => {
     case ADD:
       return [
         ...state,
-        {id: action.payload.id, title: action.payload.title, selected: false},
+        {id: state.length + 1, title: action.payload.title, selected: false},
       ];
 
     case SETSELECTED: {
       const updatedState = [...state];
       for (var i = 0; i < updatedState.length; i++) {
         if (updatedState[i].id === action.payload.id)
-          updatedState[i].selected = !state[i].selected;
+          updatedState[i].selected = !updatedState[i].selected;
       }
       return updatedState;
     }

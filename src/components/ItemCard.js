@@ -4,29 +4,24 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import HeeboText from '../components/UI/HeeboText';
 import Colors from '../constants/Colors';
-import {setSelected} from '../store/itemsAction';
 
-const ItemCard = ({id, title}) => {
+const ItemCard = ({id, title, onPress}) => {
   const selected = useSelector(state => state.items).find(
     item => item.id === id,
   ).selected;
 
-  const dispatch = useDispatch();
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        dispatch(setSelected(id));
-      }}>
+    <TouchableWithoutFeedback onPress={onPress}>
       <View
         style={[
           styles.cardContiner,
           {
-            backgroundColor: selected ? Colors.selectedColor : 'whitesmoke',
+            backgroundColor: selected
+              ? Colors.selectedColor
+              : Colors.unSelectedColor,
           },
         ]}>
-        <HeeboText
-          style={{color: selected ? 'white' : Colors.primaryColor}}
-          numberOfLines={2}>
+        <HeeboText style={{color: 'white'}} numberOfLines={2}>
           {title}
         </HeeboText>
       </View>
@@ -36,14 +31,11 @@ const ItemCard = ({id, title}) => {
 
 const styles = StyleSheet.create({
   cardContiner: {
-    height: 30,
-    borderRadius: 10,
+    borderRadius: 7,
     paddingHorizontal: 5,
     margin: 3,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'lightgrey',
   },
 });
 

@@ -3,6 +3,7 @@ import {
   PermissionsAndroid,
   ScrollView,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -44,8 +45,7 @@ const NewItemScreen = ({route, navigation}) => {
 
   const addNewKeywordHandler = () => {
     if (!newKeyword) return;
-    const id = items.length + 1;
-    dispatch(ItemsAction.add(id, newKeyword));
+    dispatch(ItemsAction.add(newKeyword));
     setnewKeyword('');
     setShowMic(true);
   };
@@ -79,7 +79,7 @@ const NewItemScreen = ({route, navigation}) => {
 
   const onSpeechRecognized = result => {
     setConvertedText('');
-    dispatch(ItemsAction.add(items.length + 1, result.transcript));
+    dispatch(ItemsAction.add(result.transcript));
   };
 
   const onSpeechRecognizing = result => {
@@ -129,11 +129,11 @@ const NewItemScreen = ({route, navigation}) => {
           <TextInput
             blurOnSubmit={false}
             underlineColorAndroid={'white'}
-            placeholder="Add Keyword"
+            placeholder="Add Keyword.."
             value={newKeyword}
             onChangeText={setnewKeywordHandler}
             onSubmitEditing={addNewKeywordHandler}
-            style={styles.inputTextContainer}
+            style={styles.textInput}
             color={Colors.primaryColor}
           />
           {showMic && <IconButton name={'mic'} onPress={openModal} />}
@@ -151,16 +151,7 @@ const NewItemScreen = ({route, navigation}) => {
           </View>
         )}
         {!!items.filter(item => item.selected === true).length && (
-          <View
-            style={[
-              styles.selected,
-              {
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                padding: 0,
-                paddingLeft: 15,
-              },
-            ]}>
+          <View style={styles.selectAllCintainer}>
             <TouchableOpacity
               onPress={() => {
                 dispatch(ItemsAction.selectAll());
@@ -180,13 +171,19 @@ const NewItemScreen = ({route, navigation}) => {
               onPress={() => {
                 dispatch(ItemsAction.deleteSelected());
               }}
+              style={{backgroundColor: 'white'}}
             />
           </View>
         )}
         <View style={styles.scrollviewContainer}>
           <ScrollView contentContainerStyle={styles.scrollview}>
             {items.map(item => (
-              <ItemCard key={item.id} id={item.id} title={item.title} />
+              <ItemCard
+                key={item.id}
+                id={item.id}
+                title={item.title}
+                onPress={() => onItemSelected(item.id)}
+              />
             ))}
           </ScrollView>
         </View>
@@ -202,9 +199,7 @@ const NewItemScreen = ({route, navigation}) => {
                 {convertedText}
               </HeeboText>
             )}
-            <HeeboText style={styles.micViewText}>
-              Speak out Keywords !
-            </HeeboText>
+            <Text style={styles.micViewText}>Speak out Keywords !</Text>
           </ModalView>
         )}
       </View>
@@ -227,12 +222,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 40,
   },
-  inputTextContainer: {
-    width: 200,
+  textInput: {
+    width: 240,
     borderBottomWidth: 1,
-    borderBottomColor: 'grey',
+    borderBottomColor: 'lightgrey',
     marginHorizontal: 10,
+    paddingVertical: 0,
     fontFamily: 'Heebo-Medium',
   },
   scrollview: {
@@ -244,7 +241,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderBottomWidth: 3,
     borderColor: 'whitesmoke',
-    marginVertical: 15,
+    marginVertical: 5,
     paddingVertical: 10,
   },
   micViewText: {
@@ -260,21 +257,15 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
   },
   browse: {
-    width: 80,
+    width: 60,
     alignItems: 'center',
+    marginBottom: 10,
     borderRadius: 5,
     borderColor: 'lightgrey',
-    marginVertical: 10,
-    paddingVertical: 10,
+    paddingVertical: 3,
     backgroundColor: 'white',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowColor: 'black',
-    shadowOpacity: 1,
-    shadowRadius: 5,
-    elevation: 8,
+    borderColor: 'lightgrey',
+    borderWidth: 1,
   },
   selected: {
     alignItems: 'center',
@@ -323,6 +314,13 @@ const styles = StyleSheet.create({
   convertedText: {
     color: 'white',
     fontSize: 18,
+  },
+  selectAllCintainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 0,
+    paddingLeft: 15,
+    alignItems: 'center',
   },
 });
 

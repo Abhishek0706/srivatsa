@@ -28,7 +28,7 @@ export default function App() {
               shadowColor: 'black',
               shadowOpacity: 1,
               shadowRadius: 3.84,
-              elevation: 15,
+              elevation: 7,
             },
             headerTintColor: 'darkblue',
           }}>

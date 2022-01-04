@@ -3,7 +3,6 @@ import {
   Modal,
   StyleSheet,
   View,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   Text,
 } from 'react-native';
@@ -11,22 +10,28 @@ import Colors from '../constants/Colors';
 
 const ModalView = ({onPressOutside, children}) => {
   return (
-    <Modal animationType="slide" transparent={true} visible={true}>
-      <TouchableOpacity style={styles.bottonView} onPress={onPressOutside}>
-        <TouchableWithoutFeedback>
-          <View style={styles.modalView}>
-            <Text style={{fontSize: 24, color: 'white'}}>....</Text>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {children}
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={true}
+      onRequestClose={onPressOutside}>
+      <TouchableWithoutFeedback onPress={onPressOutside}>
+        <View style={styles.bottomView}>
+          <TouchableWithoutFeedback>
+            <View style={styles.modalView}>
+              <Text style={{fontSize: 24, color: 'white'}}>....</Text>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                {children}
+              </View>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </TouchableOpacity>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
@@ -38,7 +43,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 22,
   },
-  bottonView: {
+  bottomView: {
     flex: 1,
     width: '100%',
     justifyContent: 'flex-end',

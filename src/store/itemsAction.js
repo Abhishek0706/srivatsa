@@ -3,8 +3,8 @@ export const SETSELECTED = 'SETSELECTED';
 export const DELETESELECTED = 'DELETESELECTED';
 export const SELECTALL = 'SELECTALL';
 
-export const add = (id, title) => {
-  return {type: ADD, payload: {id, title}};
+export const add = title => {
+  return {type: ADD, payload: {title}};
 };
 
 export const setSelected = id => {
